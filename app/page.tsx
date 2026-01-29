@@ -407,21 +407,21 @@ export default function Home() {
 
       {/* Navbar */}
       <nav className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 glass">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2 sm:gap-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
+          <div className="flex items-center justify-between gap-4 sm:gap-6">
             {/* Logo + X Link */}
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="flex items-center gap-2.5 sm:gap-3">
                 <img
                   src="/logo.png"
                   alt="Shade"
-                  className="w-14 h-14 rounded-xl object-contain -my-2"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-contain"
                 />
-                <div className="hidden xs:block">
-                  <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
+                <div>
+                  <h1 className="text-sm sm:text-lg font-bold tracking-tight text-foreground">
                     SHADE
                   </h1>
-                  <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                  <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium hidden sm:block">
                     Privacy Wallet
                   </p>
                 </div>
@@ -430,37 +430,36 @@ export default function Home() {
                 href="https://x.com/0x_anonnn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity"
+                className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity"
               >
                 <img
                   src="/anon.jpg"
                   alt="@0x_anonnn"
-                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-full ring-1 ring-white/10"
+                  className="w-7 h-7 rounded-full ring-1 ring-white/10"
                 />
-                <span className="hidden sm:inline text-xs sm:text-sm text-muted-foreground font-medium">@0x_anonnn</span>
+                <span className="text-sm text-muted-foreground font-medium">@0x_anonnn</span>
               </a>
               <Link
                 href="/about"
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                className="hidden sm:flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Info className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
-                <span className="hidden sm:inline text-xs sm:text-sm font-medium">About</span>
+                <Info className="w-5 h-5" strokeWidth={1.5} />
+                <span className="text-sm font-medium">About</span>
               </Link>
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Network Selector */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1 sm:gap-2 text-xs sm:text-sm border-white/10 hover:border-white/20 h-8 sm:h-9 px-2 sm:px-3">
-                    <div className={`w-1.5 h-1.5 rounded-full ${currentNetwork.color}`} />
-                    <span className="hidden sm:inline">{currentNetwork.label}</span>
-                    <span className="sm:hidden">{network.slice(0, 1).toUpperCase()}</span>
+                  <Button variant="outline" size="sm" className="gap-1.5 sm:gap-2 text-xs sm:text-sm border-white/10 hover:border-white/20 h-9 sm:h-10 px-2.5 sm:px-4">
+                    <div className={`w-2 h-2 rounded-full ${currentNetwork.color}`} />
+                    <span>{currentNetwork.label}</span>
                     {currentNetwork.warning && (
-                      <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-400" strokeWidth={1.5} />
+                      <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" strokeWidth={1.5} />
                     )}
-                    <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                    <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="glass min-w-[140px]">
@@ -492,10 +491,10 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleRequestAirdrop(burners[0]?.publicKey || '')}
-                className="gap-1 sm:gap-2 text-xs sm:text-sm border-blue-500/20 hover:border-blue-500/40 text-blue-400 h-8 sm:h-9 px-2 sm:px-3"
+                className="gap-1.5 sm:gap-2 text-xs sm:text-sm border-blue-500/20 hover:border-blue-500/40 text-blue-400 h-9 sm:h-10 px-2.5 sm:px-4"
               >
-                <Droplets className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
-                <span className="hidden sm:inline">Faucet</span>
+                <Droplets className="w-4 h-4 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                <span>Faucet</span>
               </Button>
 
               {/* Wallet Connect */}
@@ -504,13 +503,13 @@ export default function Home() {
                   variant="outline"
                   size="sm"
                   onClick={() => setView('connect')}
-                  className="gap-1 sm:gap-2 text-xs sm:text-sm border-purple-500/30 hover:border-purple-500/50 text-purple-400 h-8 sm:h-9 px-2 sm:px-3"
+                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm border-purple-500/30 hover:border-purple-500/50 text-purple-400 h-9 sm:h-10 px-2.5 sm:px-4"
                 >
-                  <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
-                  <span className="hidden xs:inline font-mono text-[10px] sm:text-xs">
+                  <Wallet className="w-4 h-4" strokeWidth={1.5} />
+                  <span className="font-mono text-[11px] sm:text-xs">
                     {connectedWallet.address.slice(0, 4)}...{connectedWallet.address.slice(-4)}
                   </span>
-                  <Badge variant="outline" className="border-purple-500/30 text-purple-300 text-[9px] sm:text-[10px] px-1 sm:px-1.5 h-auto font-medium">
+                  <Badge variant="outline" className="border-purple-500/30 text-purple-300 text-[10px] sm:text-xs px-1.5 sm:px-2 h-auto font-medium">
                     {walletBalance.toFixed(2)}
                   </Badge>
                 </Button>
@@ -520,10 +519,10 @@ export default function Home() {
                   size="sm"
                   onClick={() => isWalletInstalled() ? handleWalletConnect() : alert('Please install Phantom wallet')}
                   disabled={walletConnecting}
-                  className="gap-1 sm:gap-2 text-xs sm:text-sm border-purple-500/20 hover:border-purple-500/40 text-purple-400 h-8 sm:h-9 px-2 sm:px-3"
+                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm border-purple-500/20 hover:border-purple-500/40 text-purple-400 h-9 sm:h-10 px-2.5 sm:px-4"
                 >
-                  <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
-                  <span className="hidden xs:inline">{walletConnecting ? '...' : 'Connect'}</span>
+                  <Wallet className="w-4 h-4" strokeWidth={1.5} />
+                  <span>{walletConnecting ? '...' : 'Connect'}</span>
                 </Button>
               )}
             </div>
