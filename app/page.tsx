@@ -540,7 +540,7 @@ export default function Home() {
         {/* Views */}
         {view === 'dashboard' && (
           burners.length === 0 ? <EmptyState onCreateClick={() => setView('create')} /> : (
-            <div className="space-y-3">
+            <div className="space-y-3 max-w-3xl mx-auto">
               {burners.map((burner) => (
                 <BurnerCard
                   key={burner.id}

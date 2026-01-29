@@ -87,7 +87,7 @@ export function ActionButtons({ onViewChange, onAirdropRequest }: ActionButtonsP
   };
 
   return (
-    <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3 mb-8 sm:mb-10">
+    <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3 mb-8 sm:mb-10 max-w-3xl mx-auto">
       {actions.map((action) => (
         <Button
           key={action.view}
