@@ -408,22 +408,36 @@ export default function Home() {
       <nav className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 glass">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-2 sm:gap-6">
-            {/* Logo */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="relative">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center border border-primary/30">
-                  <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
+            {/* Logo + X Link */}
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="relative">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center border border-primary/30">
+                    <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsla(158,72%,38%,0.5)]" />
                 </div>
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsla(158,72%,38%,0.5)]" />
+                <div className="hidden xs:block">
+                  <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
+                    SHADE
+                  </h1>
+                  <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                    Privacy Wallet
+                  </p>
+                </div>
               </div>
-              <div className="hidden xs:block">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
-                  SHADE
-                </h1>
-                <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                  Privacy Wallet
-                </p>
-              </div>
+              <a
+                href="https://x.com/0x_anonnn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src="/anon.jpg"
+                  alt="@0x_anonnn"
+                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-full ring-1 ring-white/10"
+                />
+              </a>
             </div>
 
             {/* Right Controls */}
@@ -643,25 +657,9 @@ export default function Home() {
             <span className="text-primary">◈</span>
             <span className="font-medium">Keys encrypted locally</span>
           </div>
-          <div className="flex items-center justify-center gap-4">
-            <p className="text-muted-foreground/60 text-xs uppercase tracking-wider font-medium">
-              SHADE v1.0
-            </p>
-            <span className="text-muted-foreground/30">|</span>
-            <a
-              href="https://x.com/0x_anonnn"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-2 text-muted-foreground/70 hover:text-primary transition-all duration-300"
-            >
-              <img
-                src="/anon.jpg"
-                alt="@0x_anonnn"
-                className="w-5 h-5 rounded-full ring-1 ring-white/10 group-hover:ring-primary/50 transition-all"
-              />
-              <span className="text-xs font-medium">@0x_anonnn</span>
-            </a>
-          </div>
+          <p className="text-muted-foreground/60 text-xs uppercase tracking-wider font-medium">
+            SHADE v1.0
+          </p>
         </footer>
       </main>
     </div>
