@@ -55,6 +55,32 @@ export async function initializeStorage(): Promise<StorageInitResult> {
   };
 }
 
+// Try to recover salt from existing encrypted records in IndexedDB
+async function recoverSaltFromIndexedDB(): Promise<string | null> {
+  if (!storageInstance) return null;
+
+  try {
+    // Try to get any raw record that might contain the salt
+    const keysToTry = [
+      STORAGE_KEYS.BURNER_LIST,
+      'meta:master_salt',
+      STORAGE_KEYS.STEALTH_SEED,
+    ];
+
+    for (const key of keysToTry) {
+      const raw = await storageInstance.getRaw(key);
+      if (raw?.data?.salt) {
+        console.log('Recovered salt from:', key);
+        return raw.data.salt;
+      }
+    }
+  } catch (error) {
+    console.error('Salt recovery failed:', error);
+  }
+
+  return null;
+}
+
 // Unlock storage with password
 export async function unlockStorage(password: string): Promise<boolean> {
   if (!storageInstance) {
@@ -62,26 +88,50 @@ export async function unlockStorage(password: string): Promise<boolean> {
     if (!init.success) return false;
   }
 
-  // Check for existing salt
+  // Check for existing salt from localStorage first (unencrypted)
+  // This is critical - salt must be readable BEFORE decryption
   let salt: string | undefined;
-  if (migrationManager) {
+
+  if (typeof localStorage !== 'undefined') {
+    salt = localStorage.getItem('shade_master_salt') || undefined;
+  }
+
+  // Fallback to migration manager (for backwards compatibility)
+  if (!salt && migrationManager) {
     salt = (await migrationManager.getStoredMasterSalt()) || undefined;
   }
 
-  const unlocked = await secureKeyManager.unlock(password, salt);
-  if (!unlocked) return false;
+  // Last resort: try to recover salt from any encrypted record in IndexedDB
+  if (!salt) {
+    salt = (await recoverSaltFromIndexedDB()) || undefined;
+    if (salt) {
+      console.log('Recovered master salt from IndexedDB records');
+      // Save it to localStorage for future use
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('shade_master_salt', salt);
+      }
+    }
+  }
 
-  // Save salt if new
-  if (!salt && storageInstance) {
+  // Debug: log salt status
+  console.log('🔐 Unlock attempt:', {
+    saltSource: salt ? (localStorage.getItem('shade_master_salt') ? 'localStorage' : 'recovered') : 'new',
+    saltPreview: salt ? salt.substring(0, 20) + '...' : 'none',
+  });
+
+  const unlocked = await secureKeyManager.unlock(password, salt);
+  if (!unlocked) {
+    console.error('🔐 SecureKeyManager unlock failed');
+    return false;
+  }
+
+  console.log('🔐 Storage unlocked successfully');
+
+  // Save salt to localStorage if this is first unlock
+  if (!salt && typeof localStorage !== 'undefined') {
     const newSalt = secureKeyManager.getMasterSalt();
     if (newSalt) {
-      // We need to temporarily bypass the isReady check for this initial save
-      // by setting the value directly after unlock
-      try {
-        await storageInstance.set(STORAGE_KEYS.MASTER_SALT, newSalt);
-      } catch {
-        // Ignore - will be saved during migration or normal use
-      }
+      localStorage.setItem('shade_master_salt', newSalt);
     }
   }
 

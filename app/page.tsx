@@ -199,6 +199,12 @@ export default function Home() {
   const handleSweep = async () => {
     if (!recipientAddress || !selectedBurnerId) return;
 
+    // Require storage to be unlocked for decryption
+    if (!storageUnlocked) {
+      setShowPasswordSetup(true);
+      return;
+    }
+
     const confirmed = await requireMainnetConfirmation('Sweep Burner Funds', {
       action: 'Sweep all funds',
       amount: selectedBurner?.balance || 0,

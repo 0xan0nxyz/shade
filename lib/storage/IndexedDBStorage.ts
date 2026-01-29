@@ -99,6 +99,14 @@ export class IndexedDBStorage implements StorageProvider {
         }
 
         try {
+          // Debug: log decryption attempt
+          console.log('🔓 Decrypting key:', key, {
+            hasCiphertext: !!record.data?.ciphertext,
+            recordSaltPreview: record.data?.salt?.substring(0, 20) + '...',
+            currentSaltPreview: secureKeyManager.getMasterSalt()?.substring(0, 20) + '...',
+            saltMatch: record.data?.salt === secureKeyManager.getMasterSalt(),
+          });
+
           const decrypted = await secureKeyManager.decrypt(record.data, key);
           resolve(decrypted);
         } catch (error) {
@@ -276,12 +284,15 @@ export class IndexedDBStorage implements StorageProvider {
     }
   }
 
-  // Get raw encrypted record (for migration)
+  // Get raw encrypted record (for migration/salt recovery)
+  // NOTE: Does NOT require SecureKeyManager - used to extract salt before unlock
   async getRaw(key: string): Promise<DBRecord | null> {
     if (!this.db) return null;
 
     return new Promise((resolve) => {
-      const store = this.getStore('readonly');
+      // Bypass ensureReady() - we need raw access before SecureKeyManager is unlocked
+      const transaction = this.db!.transaction(this.options.storeName, 'readonly');
+      const store = transaction.objectStore(this.options.storeName);
       const request = store.get(key);
 
       request.onerror = () => resolve(null);
@@ -290,11 +301,14 @@ export class IndexedDBStorage implements StorageProvider {
   }
 
   // Set raw encrypted record (for migration)
+  // NOTE: Does NOT require SecureKeyManager - used during migration
   async setRaw(record: DBRecord): Promise<boolean> {
     if (!this.db) return false;
 
     return new Promise((resolve) => {
-      const store = this.getStore('readwrite');
+      // Bypass ensureReady() - we need raw access for migration
+      const transaction = this.db!.transaction(this.options.storeName, 'readwrite');
+      const store = transaction.objectStore(this.options.storeName);
       const request = store.put(record);
 
       request.onerror = () => resolve(false);

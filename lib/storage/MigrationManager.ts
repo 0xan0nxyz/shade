@@ -130,12 +130,14 @@ export class MigrationManager {
       // Migrate settings
       await this.migrateSettings(result);
 
-      // Store migration version and master salt
+      // Store migration version (encrypted in IndexedDB)
       await this.storage.set(STORAGE_KEYS.MIGRATION_VERSION, '1');
-      await this.storage.set(
-        STORAGE_KEYS.MASTER_SALT,
-        secureKeyManager.getMasterSalt() || ''
-      );
+
+      // Store master salt in localStorage (unencrypted - needed before decryption)
+      const salt = secureKeyManager.getMasterSalt();
+      if (salt) {
+        this.storeMasterSalt(salt);
+      }
 
       // Clean up legacy data after successful migration
       if (result.errors.length === 0) {
@@ -334,11 +336,34 @@ export class MigrationManager {
   }
 
   // Get stored master salt (for returning users)
+  // IMPORTANT: Salt is stored in localStorage (unencrypted) because we need it
+  // BEFORE we can derive the decryption key. Salt is not secret - it's meant
+  // to be stored alongside encrypted data.
   async getStoredMasterSalt(): Promise<string | null> {
+    if (typeof localStorage === 'undefined') return null;
+
+    // Try localStorage first (new correct location)
+    const localSalt = localStorage.getItem('shade_master_salt');
+    if (localSalt) return localSalt;
+
+    // Fallback: try to get from IndexedDB raw (unencrypted metadata)
     try {
-      return await this.storage.get(STORAGE_KEYS.MASTER_SALT);
+      const raw = await this.storage.getRaw(STORAGE_KEYS.MASTER_SALT);
+      if (raw && typeof raw.data === 'string') {
+        // If it was stored as plain string, return it
+        return raw.data as unknown as string;
+      }
     } catch {
-      return null;
+      // Ignore - salt wasn't stored correctly
+    }
+
+    return null;
+  }
+
+  // Store master salt in localStorage (unencrypted)
+  storeMasterSalt(salt: string): void {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('shade_master_salt', salt);
     }
   }
 }
