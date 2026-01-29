@@ -4,28 +4,37 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 142 76% 36%;
+    /* Professional Dark Palette */
+    --background: 0 0% 6%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+
+    /* Emerald Primary - Sophisticated */
+    --primary: 158 72% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142 76% 36%;
-    --radius: 0.75rem;
-    --success: 142 76% 36%;
-    --warning: 38 92% 50%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 158 72% 38%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 158 72% 38%;
+
+    --radius: 0.625rem;
   }
 }
 
@@ -36,50 +45,110 @@
 body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
-  font-family: 'Inter', 'JetBrains Mono', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animations */
+/* Typography */
+.font-sans {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+/* Animations - Subtle & Professional */
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
   }
-  
+
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  
+
   .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
+    animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  
+
   @keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  
-  .animate-pulse-glow {
-    animation: pulseGlow 2s ease-in-out infinite;
-  }
-  
-  @keyframes pulseGlow {
-    0%, 100% { opacity: 1; box-shadow: 0 0 20px hsla(142, 76%, 36%, 0.3); }
-    50% { opacity: 0.85; box-shadow: 0 0 40px hsla(142, 76%, 36%, 0.5); }
+    from {
+      transform: scale(0.98);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 
-/* Glass card effect */
+/* Refined Glass Effect */
 .glass {
-  @apply bg-[#0a0a0f]/80 backdrop-blur-xl border border-white/5;
+  background: linear-gradient(
+    135deg,
+    hsla(0, 0%, 7%, 0.95) 0%,
+    hsla(0, 0%, 9%, 0.9) 100%
+  );
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid hsla(0, 0%, 18%, 1);
+  box-shadow:
+    0 1px 3px hsla(0, 0%, 0%, 0.4),
+    0 8px 24px hsla(0, 0%, 0%, 0.3),
+    inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
 }
 
-/* Text gradient */
+.glass-noir {
+  background: linear-gradient(
+    135deg,
+    hsla(0, 0%, 7%, 0.95) 0%,
+    hsla(0, 0%, 9%, 0.9) 100%
+  );
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid hsla(0, 0%, 18%, 1);
+  box-shadow:
+    0 1px 3px hsla(0, 0%, 0%, 0.4),
+    0 8px 24px hsla(0, 0%, 0%, 0.3),
+    inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
+}
+
+/* Text Gradient */
 .text-gradient {
-  @apply bg-gradient-to-r from-[#00ff88] via-[#00d4ff] to-[#8b5cf6] bg-clip-text text-transparent;
+  background: linear-gradient(
+    135deg,
+    hsl(158, 72%, 48%) 0%,
+    hsl(160, 75%, 40%) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Custom scrollbar */
+.text-gradient-noir {
+  background: linear-gradient(
+    135deg,
+    hsl(158, 72%, 48%) 0%,
+    hsl(160, 75%, 40%) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar - Refined */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -100,36 +169,111 @@ body {
 
 /* Selection */
 ::selection {
-  background: hsla(142, 76%, 36%, 0.3);
-  color: white;
+  background: hsla(158, 72%, 38%, 0.3);
+  color: hsl(0, 0%, 100%);
 }
 
-/* Focus outline */
+/* Focus Outline */
 *:focus-visible {
-  outline: 2px solid hsla(142, 76%, 36%, 0.5);
+  outline: 2px solid hsla(158, 72%, 48%, 0.5);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, box-shadow;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+
+/* Dialog Backdrop */
+*::backdrop {
+  background: hsla(0, 0%, 0%, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-/* Input styles */
-input {
-  @apply bg-white/5 border border-white/10 rounded-lg px-4 py-3;
-  @apply focus:outline-none focus:border-primary/50 focus:bg-white/10;
-  @apply placeholder:text-muted-foreground;
-  @apply font-mono text-sm;
+/* Button & Input Base Styles */
+@layer components {
+  button {
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-weight: 500;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  textarea {
+    background: hsla(0, 0%, 10%, 0.8);
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    color: hsl(var(--foreground));
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-size: 0.875rem;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: hsla(158, 72%, 48%, 0.6);
+    box-shadow: 0 0 0 3px hsla(158, 72%, 38%, 0.1);
+    background: hsla(0, 0%, 12%, 0.9);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
 }
 
-/* Button base */
-button {
-  @apply cursor-pointer;
+/* Atmospheric Background Effects - Subtle */
+.atmosphere-glow {
+  position: fixed;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
 }
 
-button:disabled {
-  @apply cursor-not-allowed opacity-50;
+.atmosphere-glow-primary {
+  background: radial-gradient(
+    circle,
+    hsla(158, 72%, 38%, 0.3) 0%,
+    transparent 70%
+  );
+}
+
+.atmosphere-glow-accent {
+  background: radial-gradient(
+    circle,
+    hsla(0, 72%, 51%, 0.25) 0%,
+    transparent 70%
+  );
+}
+
+/* Vignette Effect - Subtle */
+.vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 70%,
+    hsla(0, 0%, 0%, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Remove old effects */
+body::before,
+body::after {
+  display: none;
 }

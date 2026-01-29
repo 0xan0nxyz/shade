@@ -1,6 +1,4 @@
-export { Button } from './Button';
-export { Card, CardHeader } from './Card';
-export { Input, Textarea } from './Input';
+// Custom shared components only (shadcn/ui components are imported directly)
 export { BackButton } from './BackButton';
 export { StatusMessage } from './StatusMessage';
 export { MainnetConfirmDialog } from './MainnetConfirmDialog';

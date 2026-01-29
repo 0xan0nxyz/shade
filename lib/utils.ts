@@ -1,6 +1,13 @@
 // Utility functions for SHADE burner wallet
 
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 import bs58 from 'bs58';
+
+// shadcn/ui utility
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 // Generate QR code URL for address
 export function generateQR(address: string): string {

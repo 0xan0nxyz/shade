@@ -2,6 +2,8 @@
 
 import { formatSOL } from '@/lib/utils';
 import { Network } from '@/lib/constants';
+import { Flame, Coins, Globe } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface StatsCardsProps {
   burnerCount: number;
@@ -9,56 +11,85 @@ interface StatsCardsProps {
   network: Network;
 }
 
-const networkColors: Record<Network, string> = {
-  mainnet: 'from-red-500 to-rose-600',
-  devnet: 'from-yellow-400 to-amber-500',
-  testnet: 'from-blue-400 to-indigo-500',
-};
-
-const networkNames: Record<Network, string> = {
-  mainnet: 'Mainnet',
-  devnet: 'Devnet',
-  testnet: 'Testnet',
+const networkConfig: Record<Network, { label: string; gradient: string; iconColor: string }> = {
+  mainnet: {
+    label: 'MAINNET',
+    gradient: 'from-red-500 to-rose-600',
+    iconColor: 'text-red-400',
+  },
+  devnet: {
+    label: 'DEVNET',
+    gradient: 'from-yellow-400 to-amber-500',
+    iconColor: 'text-yellow-400',
+  },
+  testnet: {
+    label: 'TESTNET',
+    gradient: 'from-blue-400 to-indigo-500',
+    iconColor: 'text-blue-400',
+  },
 };
 
 export function StatsCards({ burnerCount, totalBalance, network }: StatsCardsProps) {
+  const config = networkConfig[network];
+
   return (
-    <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-8">
-      <div className="glass rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-white/5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-muted-foreground text-[10px] sm:text-xs">Burners</p>
-            <p className="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1">{burnerCount}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10">
+      {/* Burners Card */}
+      <Card className="glass border border-white/5 hover:border-white/10 transition-all">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-center sm:items-start justify-between">
+            <div className="space-y-0.5 sm:space-y-1">
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                Burners
+              </p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                {burnerCount}
+              </p>
+            </div>
+            <div className="p-2.5 sm:p-3 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20">
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="w-8 h-8 sm:w-10 sm:h-10 sm:rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center text-lg sm:text-xl rounded-lg">
-            🔥
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="glass rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-white/5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-muted-foreground text-[10px] sm:text-xs">Balance</p>
-            <p className="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 text-primary">{formatSOL(totalBalance)}</p>
+      {/* Balance Card */}
+      <Card className="glass border border-white/5 hover:border-white/10 transition-all">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-center sm:items-start justify-between">
+            <div className="space-y-0.5 sm:space-y-1">
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                Balance
+              </p>
+              <p className="text-2xl sm:text-3xl font-bold text-gradient tracking-tight">
+                {formatSOL(totalBalance)}
+              </p>
+            </div>
+            <div className="p-2.5 sm:p-3 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20">
+              <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="w-8 h-8 sm:w-10 sm:h-10 sm:rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-lg sm:text-xl rounded-lg">
-            ◎
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="glass rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-white/5">
-        <div className="flex items-center justify-between">
-          <div className="overflow-hidden">
-            <p className="text-muted-foreground text-[10px] sm:text-xs truncate">Network</p>
-            <p className={`text-sm sm:text-xl md:text-2xl font-bold mt-0.5 sm:mt-1 truncate bg-gradient-to-r ${networkColors[network]} bg-clip-text text-transparent`}>{networkNames[network]}</p>
+      {/* Network Card */}
+      <Card className="glass border border-white/5 hover:border-white/10 transition-all">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-center sm:items-start justify-between">
+            <div className="space-y-0.5 sm:space-y-1">
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                Network
+              </p>
+              <p className={`text-base sm:text-lg font-bold bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent tracking-tight`}>
+                {config.label}
+              </p>
+            </div>
+            <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${config.gradient} border border-white/10`}>
+              <Globe className={`w-4 h-4 sm:w-5 sm:h-5 ${config.iconColor}`} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className={`w-8 h-8 sm:w-10 sm:h-10 sm:rounded-xl bg-gradient-to-br ${networkColors[network]} flex items-center justify-center text-lg sm:text-xl rounded-lg opacity-80`}>
-            🌐
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

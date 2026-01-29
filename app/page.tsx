@@ -7,6 +7,8 @@ import {
   ActionButtons,
   BurnerCard,
   EmptyState,
+} from '@/components/dashboard';
+import {
   CreateView,
   BackupView,
   TransferView,
@@ -14,7 +16,7 @@ import {
   PasskeyView,
   GaslessView,
   ConnectWalletView,
-} from '@/components';
+} from '@/components/views';
 import { MainnetConfirmDialog, PasswordSetup } from '@/components/shared';
 import { initializeStorage, unlockStorage, isStorageReady } from '@/lib/storage';
 import { exportBurners, downloadBackup, importBurners, destroyBurner } from '@/lib/burner';
@@ -22,8 +24,17 @@ import { exportCompleteWallet, importCompleteWallet, getBackupSummary, downloadB
 import { generateStealthAddress, getStealthAddresses, sweepStealthAddress, getStealthMetaAddress, isStealthInitialized } from '@/lib/stealth';
 import { createPasskeyWallet, authenticateWithPasskey, hasPasskeyWallet, deletePasskeyWallet, isPasskeyAvailable } from '@/lib/passkey';
 import { setFeePayerAddress, getFeePayerAddress, createPrepaidBurner, getPrepaidBurners, deletePrepaidBurner, getGaslessStats, clearGaslessConfig } from '@/lib/gasless';
-import { connectWallet, disconnectWallet, getWalletBalance, isWalletInstalled, getAvailableWallets, getConnectedWallet, ConnectedWallet, WalletAdapter } from '@/lib/wallet-connection';
+import { connectWallet, disconnectWallet, getWalletBalance, isWalletInstalled, getAvailableWallets, getConnectedWallet, ConnectedWallet } from '@/lib/wallet-connection';
 import { Network } from '@/lib/constants';
+import { Ghost, ChevronDown, Droplets, Wallet, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type ViewMode = 'dashboard' | 'transfer' | 'create' | 'backup' | 'stealth' | 'passkey' | 'gasless' | 'connect';
 
@@ -148,7 +159,7 @@ export default function Home() {
     };
 
     refreshBalance();
-  }, [network]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [network]);
 
   // Refresh wallet balance periodically when connected
   useEffect(() => {
@@ -163,18 +174,13 @@ export default function Home() {
       }
     };
 
-    // Initial refresh
     refreshBalance();
-
-    // Refresh every 10 seconds
     const interval = setInterval(refreshBalance, 10000);
-
     return () => clearInterval(interval);
-  }, [connectedWallet?.address]); // Only refresh when address changes
+  }, [connectedWallet?.address]);
 
   // Handlers
   const handleCreateBurner = async () => {
-    // Check if storage is unlocked
     if (!storageUnlocked) {
       setShowPasswordSetup(true);
       return;
@@ -193,7 +199,6 @@ export default function Home() {
   const handleSweep = async () => {
     if (!recipientAddress || !selectedBurnerId) return;
 
-    // Require mainnet confirmation
     const confirmed = await requireMainnetConfirmation('Sweep Burner Funds', {
       action: 'Sweep all funds',
       amount: selectedBurner?.balance || 0,
@@ -211,7 +216,9 @@ export default function Home() {
         setRecipientAddress('');
         loadBurners();
       }, 2000);
-    } catch {
+    } catch (error) {
+      console.error('Sweep failed:', error);
+      alert(`Sweep failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setTransferStatus('error');
     }
     setTransferLoading(false);
@@ -260,7 +267,6 @@ export default function Home() {
       setBackupStatus({ type: 'error', message: 'Paste your backup JSON and enter password' });
       return;
     }
-    // Use complete import which handles both v2 (burners only) and v3 (complete) formats
     const result = await importCompleteWallet(importJson);
     if (result.success) {
       const parts = [];
@@ -296,7 +302,6 @@ export default function Home() {
     const dest = prompt('Enter destination address:');
     if (!dest) return;
 
-    // Require mainnet confirmation
     const confirmed = await requireMainnetConfirmation('Sweep Stealth Address', {
       action: 'Sweep stealth funds',
       recipient: dest,
@@ -372,8 +377,16 @@ export default function Home() {
 
   const selectedBurner = burners.find(b => b.id === selectedBurnerId);
 
+  const networkConfig = {
+    mainnet: { color: 'bg-red-500', label: 'MAINNET', warning: true },
+    devnet: { color: 'bg-yellow-400', label: 'DEVNET', warning: false },
+    testnet: { color: 'bg-blue-400', label: 'TESTNET', warning: false },
+  };
+
+  const currentNetwork = networkConfig[network];
+
   return (
-    <div className="min-h-screen bg-[#030305] text-white font-sans">
+    <div className="min-h-screen">
       {/* Password Setup Modal */}
       {showPasswordSetup && (
         <PasswordSetup
@@ -385,67 +398,134 @@ export default function Home() {
       {/* Mainnet Confirmation Dialog */}
       <MainnetConfirmDialog {...dialogState} />
 
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-accent/5 via-transparent to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
-      </div>
-
       {/* Navbar */}
-      <nav className="relative border-b border-white/5 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center font-bold text-sm sm:text-lg shadow-lg shadow-primary/20">S</div>
-            <div className="hidden xs:block">
-              <h1 className="text-base sm:text-xl font-bold tracking-tight">SHADE</h1>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Privacy Wallet</p>
+      <nav className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 glass">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-6">
+            {/* Logo */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="relative">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center border border-primary/30">
+                  <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
+                </div>
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsla(158,72%,38%,0.5)]" />
+              </div>
+              <div className="hidden xs:block">
+                <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
+                  SHADE
+                </h1>
+                <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                  Privacy Wallet
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            <NetworkSelector network={network} onNetworkChange={setNetwork} />
-            <button onClick={() => handleRequestAirdrop(burners[0]?.publicKey || '')} className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 hover:border-blue-500/40 text-blue-400 text-xs sm:text-sm transition-all flex items-center gap-1 whitespace-nowrap">
-              <span className="text-sm">💧</span><span className="hidden sm:inline">Faucet</span>
-            </button>
-            {/* Phantom Connect Button */}
-            {connectedWallet ? (
-              <button
-                onClick={() => setView('connect')}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/30 hover:border-purple-500/50 text-purple-400 text-xs sm:text-sm transition-all flex items-center gap-1.5 whitespace-nowrap"
+
+            {/* Right Controls */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
+              {/* Network Selector */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-1 sm:gap-2 text-xs sm:text-sm border-white/10 hover:border-white/20 h-8 sm:h-9 px-2 sm:px-3">
+                    <div className={`w-1.5 h-1.5 rounded-full ${currentNetwork.color}`} />
+                    <span className="hidden sm:inline">{currentNetwork.label}</span>
+                    <span className="sm:hidden">{network.slice(0, 1).toUpperCase()}</span>
+                    {currentNetwork.warning && (
+                      <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-400" strokeWidth={1.5} />
+                    )}
+                    <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="glass min-w-[140px]">
+                  {(['mainnet', 'devnet', 'testnet'] as const).map((net) => {
+                    const config = networkConfig[net];
+                    return (
+                      <DropdownMenuItem
+                        key={net}
+                        onClick={() => {
+                          if (net === 'mainnet') {
+                            const confirmed = confirm('⚠️ MAINNET WARNING\n\nYou are switching to Mainnet.\nTransactions will use REAL SOL.\n\nAre you sure?');
+                            if (!confirmed) return;
+                          }
+                          setNetwork(net);
+                        }}
+                        className="text-sm gap-2"
+                      >
+                        <div className={`w-1.5 h-1.5 rounded-full ${config.color}`} />
+                        {config.label}
+                        {config.warning && <span className="ml-auto text-red-400 text-[10px]">⚠️</span>}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Faucet */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleRequestAirdrop(burners[0]?.publicKey || '')}
+                className="gap-1 sm:gap-2 text-xs sm:text-sm border-blue-500/20 hover:border-blue-500/40 text-blue-400 h-8 sm:h-9 px-2 sm:px-3"
               >
-                <span className="text-sm">👻</span>
-                <span className="font-mono hidden xs:inline">{connectedWallet.address.slice(0, 4)}...{connectedWallet.address.slice(-4)}</span>
-                <span className="text-purple-300">({walletBalance.toFixed(2)} SOL)</span>
-              </button>
-            ) : (
-              <button
-                onClick={() => isWalletInstalled() ? handleWalletConnect() : alert('Please install Phantom wallet')}
-                disabled={walletConnecting}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 hover:border-purple-500/40 text-purple-400 text-xs sm:text-sm transition-all flex items-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
-              >
-                <span className="text-sm">👻</span>
-                <span className="hidden sm:inline">{walletConnecting ? 'Connecting...' : 'Connect'}</span>
-              </button>
-            )}
+                <Droplets className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                <span className="hidden sm:inline">Faucet</span>
+              </Button>
+
+              {/* Wallet Connect */}
+              {connectedWallet ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setView('connect')}
+                  className="gap-1 sm:gap-2 text-xs sm:text-sm border-purple-500/30 hover:border-purple-500/50 text-purple-400 h-8 sm:h-9 px-2 sm:px-3"
+                >
+                  <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                  <span className="hidden xs:inline font-mono text-[10px] sm:text-xs">
+                    {connectedWallet.address.slice(0, 4)}...{connectedWallet.address.slice(-4)}
+                  </span>
+                  <Badge variant="outline" className="border-purple-500/30 text-purple-300 text-[9px] sm:text-[10px] px-1 sm:px-1.5 h-auto font-medium">
+                    {walletBalance.toFixed(2)}
+                  </Badge>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => isWalletInstalled() ? handleWalletConnect() : alert('Please install Phantom wallet')}
+                  disabled={walletConnecting}
+                  className="gap-1 sm:gap-2 text-xs sm:text-sm border-purple-500/20 hover:border-purple-500/40 text-purple-400 h-8 sm:h-9 px-2 sm:px-3"
+                >
+                  <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
+                  <span className="hidden xs:inline">{walletConnecting ? '...' : 'Connect'}</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="relative max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+        {/* Airdrop Status */}
         {airdropStatus && (
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl bg-primary/10 border border-primary/20 text-center animate-fade-in text-sm">
-            <p className="text-primary">{airdropStatus}</p>
+          <div className="mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl glass border border-primary/20 text-center animate-fade-in">
+            <p className="text-xs sm:text-sm text-primary font-medium">{airdropStatus}</p>
           </div>
         )}
 
-        {/* Hero */}
-        <div className="text-center mb-6 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 px-2">
-            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">Burn Smart.</span>
-            <br /><span className="text-foreground text-xl sm:text-2xl md:text-3xl">Stay Anonymous.</span>
+        {/* Hero Section */}
+        <div className="text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
+          <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+            <span className="text-gradient">Burn Smart.</span>
+            <span className="block text-lg xs:text-xl sm:text-2xl md:text-3xl text-foreground/90 mt-2 sm:mt-3 font-medium">
+              Stay Anonymous.
+            </span>
           </h2>
-          <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-xl mx-auto px-4">Privacy-first burner wallet manager for Solana. Generate disposable wallets instantly with zero on-chain link to your identity.</p>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed px-4 sm:px-0">
+            Zero-knowledge burner wallet manager for Solana.
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>
+            Generate disposable wallets. Leave no trace.
+          </p>
         </div>
 
         <StatsCards burnerCount={burners.length} totalBalance={totalBalance} network={network} />
@@ -454,80 +534,114 @@ export default function Home() {
         {/* Views */}
         {view === 'dashboard' && (
           burners.length === 0 ? <EmptyState onCreateClick={() => setView('create')} /> : (
-            <div className="space-y-2 sm:space-y-3">
-              {burners.map(burner => (
-                <BurnerCard key={burner.id} burner={burner} isExpanded={expandedId === burner.id} isMobile={isMobile}
-                  onToggleExpand={() => setExpandedId(expandedId === burner.id ? null : burner.id)}
+            <div className="space-y-3">
+              {burners.map((burner) => (
+                <BurnerCard
+                  key={burner.id}
+                  burner={burner}
+                  isExpanded={expandedId === burner.id}
+                  isMobile={isMobile}
+                  onToggleExpand={(open) => setExpandedId(open ? burner.id : null)}
                   onCopy={() => navigator.clipboard.writeText(burner.publicKey)}
                   onSweep={() => { setSelectedBurnerId(burner.id); setView('transfer'); }}
-                  onDestroy={() => handleDestroy(burner.id)} />
+                  onDestroy={() => handleDestroy(burner.id)}
+                />
               ))}
             </div>
           )
         )}
 
         {view === 'create' && <CreateView loading={loading} onBack={() => setView('dashboard')} onCreate={handleCreateBurner} />}
-        {view === 'backup' && <BackupView backupPassword={backupPassword} importJson={importJson} backupStatus={backupStatus} burnerCount={burners.length} onPasswordChange={setBackupPassword} onImportJsonChange={setImportJson} onExport={handleExportBackup} onExportComplete={handleExportCompleteBackup} onImport={handleImportBackup} onBack={() => { setView('dashboard'); setBackupStatus(null); }} backupSummary={backupSummary} />}
-        {view === 'transfer' && <TransferView recipientAddress={recipientAddress} selectedBurnerLabel={selectedBurner?.label} selectedBurnerBalance={selectedBurner?.balance || 0} transferStatus={transferStatus} transferLoading={transferLoading} onRecipientChange={setRecipientAddress} onSweep={handleSweep} onBack={() => { setView('dashboard'); setTransferStatus('idle'); }} />}
-        {view === 'stealth' && <StealthView stealthPassword={stealthPassword} stealthInitialized={stealthInitialized} stealthAddresses={stealthAddresses} metaAddress={metaAddress} onPasswordChange={setStealthPassword} onInitialize={handleStealthInit} onGenerate={handleStealthGenerate} onSweep={handleStealthSweep} onBack={() => setView('dashboard')} />}
-        {view === 'passkey' && <PasskeyView passkeyAvailable={passkeyAvailable} hasWallet={hasWallet} passkeyLoading={passkeyLoading} username={username} onUsernameChange={setUsername} onCreateWallet={handlePasskeyCreate} onAuthenticate={handlePasskeyAuth} onDeleteWallet={handlePasskeyDelete} onBack={() => setView('dashboard')} />}
-        {view === 'gasless' && <GaslessView feePayerAddress={feePayerAddress} gaslessStats={gaslessStats} gaslessLoading={gaslessLoading} prepaidBurners={getPrepaidBurners()} onFeePayerChange={(addr) => { setFeePayerAddressState(addr); setFeePayerAddress(addr); }} onCreatePrepaid={handleGaslessCreate} onDeletePrepaid={(id) => { deletePrepaidBurner(id); getGaslessStats().then(setGaslessStats); }} onClearConfig={handleGaslessClear} onBack={() => setView('dashboard')} />}
-        {view === 'connect' && <ConnectWalletView connectedWallet={connectedWallet} walletBalance={walletBalance} walletConnecting={walletConnecting} isWalletInstalled={isWalletInstalled()} availableWallets={getAvailableWallets()} onConnect={handleWalletConnect} onDisconnect={handleWalletDisconnect} onBack={() => setView('dashboard')} />}
+        {view === 'backup' && (
+          <BackupView
+            backupPassword={backupPassword}
+            importJson={importJson}
+            backupStatus={backupStatus}
+            burnerCount={burners.length}
+            onPasswordChange={setBackupPassword}
+            onImportJsonChange={setImportJson}
+            onExport={handleExportBackup}
+            onExportComplete={handleExportCompleteBackup}
+            onImport={handleImportBackup}
+            onBack={() => { setView('dashboard'); setBackupStatus(null); }}
+            backupSummary={backupSummary}
+          />
+        )}
+        {view === 'transfer' && (
+          <TransferView
+            recipientAddress={recipientAddress}
+            selectedBurnerLabel={selectedBurner?.label}
+            selectedBurnerBalance={selectedBurner?.balance || 0}
+            transferStatus={transferStatus}
+            transferLoading={transferLoading}
+            onRecipientChange={setRecipientAddress}
+            onSweep={handleSweep}
+            onBack={() => { setView('dashboard'); setTransferStatus('idle'); }}
+          />
+        )}
+        {view === 'stealth' && (
+          <StealthView
+            stealthPassword={stealthPassword}
+            stealthInitialized={stealthInitialized}
+            stealthAddresses={stealthAddresses}
+            metaAddress={metaAddress}
+            onPasswordChange={setStealthPassword}
+            onInitialize={handleStealthInit}
+            onGenerate={handleStealthGenerate}
+            onSweep={handleStealthSweep}
+            onBack={() => setView('dashboard')}
+          />
+        )}
+        {view === 'passkey' && (
+          <PasskeyView
+            passkeyAvailable={passkeyAvailable}
+            hasWallet={hasWallet}
+            passkeyLoading={passkeyLoading}
+            username={username}
+            onUsernameChange={setUsername}
+            onCreateWallet={handlePasskeyCreate}
+            onAuthenticate={handlePasskeyAuth}
+            onDeleteWallet={handlePasskeyDelete}
+            onBack={() => setView('dashboard')}
+          />
+        )}
+        {view === 'gasless' && (
+          <GaslessView
+            feePayerAddress={feePayerAddress}
+            gaslessStats={gaslessStats}
+            gaslessLoading={gaslessLoading}
+            prepaidBurners={getPrepaidBurners()}
+            onFeePayerChange={(addr) => { setFeePayerAddressState(addr); setFeePayerAddress(addr); }}
+            onCreatePrepaid={handleGaslessCreate}
+            onDeletePrepaid={(id) => { deletePrepaidBurner(id); getGaslessStats().then(setGaslessStats); }}
+            onClearConfig={handleGaslessClear}
+            onBack={() => setView('dashboard')}
+          />
+        )}
+        {view === 'connect' && (
+          <ConnectWalletView
+            connectedWallet={connectedWallet}
+            walletBalance={walletBalance}
+            walletConnecting={walletConnecting}
+            isWalletInstalled={isWalletInstalled()}
+            availableWallets={getAvailableWallets()}
+            onConnect={handleWalletConnect}
+            onDisconnect={handleWalletDisconnect}
+            onBack={() => setView('dashboard')}
+          />
+        )}
 
-        <footer className="mt-8 sm:mt-12 text-center">
+        {/* Footer */}
+        <footer className="mt-12 sm:mt-20 text-center space-y-2">
           <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs sm:text-sm">
-            <span>🔒</span><span>Keys encrypted locally</span>
+            <span className="text-primary">◈</span>
+            <span className="font-medium">Keys encrypted locally</span>
           </div>
-          <p className="text-muted-foreground/50 text-[10px] sm:text-xs mt-1 sm:mt-2">SHADE v2.0 • Privacy First</p>
+          <p className="text-muted-foreground/50 text-[10px] sm:text-xs uppercase tracking-wider">
+            SHADE v2.0
+          </p>
         </footer>
       </main>
-    </div>
-  );
-}
-
-// Network Selector Component with mainnet support
-function NetworkSelector({ network, onNetworkChange }: { network: Network; onNetworkChange: (n: Network) => void }) {
-  const [showMenu, setShowMenu] = useState(false);
-  const colors: Record<Network, string> = {
-    mainnet: 'from-red-500 to-rose-600',
-    devnet: 'from-yellow-400 to-amber-500',
-    testnet: 'from-blue-400 to-indigo-500',
-  };
-  const names: Record<Network, string> = {
-    mainnet: 'Mainnet',
-    devnet: 'Devnet',
-    testnet: 'Testnet',
-  };
-
-  const handleNetworkChange = (net: Network) => {
-    if (net === 'mainnet') {
-      const confirmed = confirm('⚠️ MAINNET WARNING\n\nYou are switching to Mainnet.\nTransactions will use REAL SOL.\n\nAre you sure?');
-      if (!confirmed) return;
-    }
-    onNetworkChange(net);
-    setShowMenu(false);
-  };
-
-  return (
-    <div className="relative">
-      <button onClick={() => setShowMenu(!showMenu)} className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-white/5 hover:bg-white/10 border ${network === 'mainnet' ? 'border-red-500/30' : 'border-white/10'} transition-all text-xs sm:text-sm`}>
-        <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gradient-to-r ${colors[network]}`} />
-        <span className="hidden sm:inline">{names[network]}</span>
-        <span className="sm:hidden">{network[0].toUpperCase()}</span>
-        {network === 'mainnet' && <span className="text-red-400 text-[10px]">⚠️</span>}
-        <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-      </button>
-      {showMenu && (
-        <div className="absolute right-0 mt-2 w-36 sm:w-40 bg-[#0a0a0f] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
-          {(['mainnet', 'devnet', 'testnet'] as const).map(net => (
-            <button key={net} onClick={() => handleNetworkChange(net)} className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm flex items-center gap-2 hover:bg-white/5 transition-colors ${network === net ? 'text-primary' : 'text-foreground'} ${net === 'mainnet' ? 'border-b border-red-500/20' : ''}`}>
-              <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gradient-to-r ${colors[net]}`} />
-              {names[net]}
-              {net === 'mainnet' && <span className="ml-auto text-red-400 text-[10px]">Real $</span>}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

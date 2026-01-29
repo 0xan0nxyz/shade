@@ -247,7 +247,7 @@ export async function createBurner(label?: string): Promise<BurnerWallet> {
     localStorage.setItem(`shade_key_${id}`, encryptedKey);
   }
 
-  const burners = getStoredBurners();
+  const burners = await getStoredBurners();
   burners.push(burner);
   await saveBurners(burners);
 

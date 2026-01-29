@@ -1,5 +1,8 @@
 'use client';
 
+import { Flame, Shield, Ghost, Lock, Zap, ExternalLink, Droplets } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
 type ViewMode = 'dashboard' | 'transfer' | 'create' | 'backup' | 'stealth' | 'passkey' | 'gasless' | 'connect';
 
 interface ActionButtonsProps {
@@ -9,21 +12,70 @@ interface ActionButtonsProps {
 
 interface ActionButton {
   view: ViewMode | 'airdrop';
-  icon: string;
+  icon: React.ReactNode;
   label: string;
-  bgClass: string;
-  borderClass: string;
+  description: string;
+  variant: 'primary' | 'secondary' | 'accent' | 'danger';
 }
 
 const actions: ActionButton[] = [
-  { view: 'create', icon: '🔥', label: 'Create', bgClass: 'bg-gradient-to-r from-primary/15 to-accent/15', borderClass: 'border-primary/25 hover:border-primary/45' },
-  { view: 'backup', icon: '💾', label: 'Backup', bgClass: 'bg-white/5', borderClass: 'border-white/10 hover:border-white/20' },
-  { view: 'stealth', icon: '👻', label: 'Stealth', bgClass: 'bg-purple-500/10', borderClass: 'border-purple-500/20 hover:border-purple-500/40' },
-  { view: 'passkey', icon: '🔐', label: 'Passkey', bgClass: 'bg-emerald-500/10', borderClass: 'border-emerald-500/20 hover:border-emerald-500/40' },
-  { view: 'gasless', icon: '💸', label: 'Gasless', bgClass: 'bg-amber-500/10', borderClass: 'border-amber-500/20 hover:border-amber-500/40' },
-  { view: 'connect', icon: '🔗', label: 'Connect', bgClass: 'bg-indigo-500/10', borderClass: 'border-indigo-500/20 hover:border-indigo-500/40' },
-  { view: 'airdrop', icon: '💧', label: 'Faucet', bgClass: 'bg-blue-500/10', borderClass: 'border-blue-500/20 hover:border-blue-500/40' },
+  {
+    view: 'create',
+    icon: <Flame className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Create',
+    description: 'New burner',
+    variant: 'primary',
+  },
+  {
+    view: 'backup',
+    icon: <Shield className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Backup',
+    description: 'Export keys',
+    variant: 'secondary',
+  },
+  {
+    view: 'stealth',
+    icon: <Ghost className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Stealth',
+    description: 'Anonymous',
+    variant: 'accent',
+  },
+  {
+    view: 'passkey',
+    icon: <Lock className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Passkey',
+    description: 'Biometric',
+    variant: 'accent',
+  },
+  {
+    view: 'gasless',
+    icon: <Zap className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Gasless',
+    description: 'Prepaid',
+    variant: 'accent',
+  },
+  {
+    view: 'connect',
+    icon: <ExternalLink className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Connect',
+    description: 'Wallet',
+    variant: 'secondary',
+  },
+  {
+    view: 'airdrop',
+    icon: <Droplets className="w-4 h-4" strokeWidth={1.5} />,
+    label: 'Faucet',
+    description: 'Get SOL',
+    variant: 'accent',
+  },
 ];
+
+const variantStyles = {
+  primary: 'border-primary/30 hover:border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary',
+  secondary: 'border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-foreground',
+  accent: 'border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-foreground',
+  danger: 'border-red-500/20 hover:border-red-500/40 bg-red-500/5 hover:bg-red-500/10 text-red-400',
+};
 
 export function ActionButtons({ onViewChange, onAirdropRequest }: ActionButtonsProps) {
   const handleClick = (action: ActionButton) => {
@@ -35,16 +87,26 @@ export function ActionButtons({ onViewChange, onAirdropRequest }: ActionButtonsP
   };
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-8">
+    <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3 mb-8 sm:mb-10">
       {actions.map((action) => (
-        <button
+        <Button
           key={action.view}
           onClick={() => handleClick(action)}
-          className={`py-3 sm:py-4 rounded-xl ${action.bgClass} border ${action.borderClass} transition-all flex items-center justify-center gap-2`}
+          variant="outline"
+          className={`
+            glass rounded-xl p-2.5 sm:p-4 h-auto flex flex-col items-center justify-center gap-1.5 sm:gap-3
+            transition-all duration-200
+            ${variantStyles[action.variant]}
+          `}
         >
-          <span className="text-xl sm:text-2xl">{action.icon}</span>
-          <span className="text-sm sm:text-base font-semibold">{action.label}</span>
-        </button>
+          <div className="p-1.5 sm:p-2 rounded-lg bg-black/20">{action.icon}</div>
+          <div className="text-center">
+            <p className="font-semibold text-xs sm:text-sm">{action.label}</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wide font-medium hidden xs:block">
+              {action.description}
+            </p>
+          </div>
+        </Button>
       ))}
     </div>
   );

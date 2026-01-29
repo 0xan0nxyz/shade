@@ -1,13 +1,8 @@
 // Layout components
 export { Navbar } from './layout/Navbar';
 
-// Shared components
+// Shared components (custom components only - shadcn/ui imported separately)
 export {
-  Button,
-  Card,
-  CardHeader,
-  Input,
-  Textarea,
   BackButton,
   StatusMessage,
 } from './shared';
@@ -30,3 +25,6 @@ export {
   GaslessView,
   ConnectWalletView,
 } from './views';
+
+// Re-export shared dialogs that are imported elsewhere
+export { MainnetConfirmDialog, PasswordSetup } from './shared';
