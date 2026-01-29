@@ -1,0 +1,46 @@
+{
+  "name": "shade-wallet",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.1.8",
+    "@solana/wallet-adapter-phantom": "^0.9.28",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-solflare": "^0.6.32",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "autoprefixer": "^10.4.19",
+    "bs58": "^5.0.0",
+    "buffer": "^6.0.3",
+    "crypto-js": "^4.2.0",
+    "next": "14.2.0",
+    "postcss": "^8.4.40",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^3.4.7"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/bs58": "^4.0.4",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20.14.12",
+    "@types/react": "18.3.27",
+    "@vitejs/plugin-react": "^4.6.0",
+    "@vitest/ui": "^4.0.18",
+    "jsdom": "^27.4.0",
+    "react-router-dom": "^7.6.3",
+    "typescript": "^5.5.4",
+    "vitest": "^4.0.18"
+  }
+}
