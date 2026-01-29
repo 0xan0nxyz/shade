@@ -26,7 +26,8 @@ import { createPasskeyWallet, authenticateWithPasskey, hasPasskeyWallet, deleteP
 import { setFeePayerAddress, getFeePayerAddress, createPrepaidBurner, getPrepaidBurners, deletePrepaidBurner, getGaslessStats, clearGaslessConfig } from '@/lib/gasless';
 import { connectWallet, disconnectWallet, getWalletBalance, isWalletInstalled, getAvailableWallets, getConnectedWallet, ConnectedWallet } from '@/lib/wallet-connection';
 import { Network } from '@/lib/constants';
-import { Ghost, ChevronDown, Droplets, Wallet, AlertTriangle } from 'lucide-react';
+import { Ghost, ChevronDown, Droplets, Wallet, AlertTriangle, Info } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -411,12 +412,11 @@ export default function Home() {
             {/* Logo + X Link */}
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="relative">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center border border-primary/30">
-                    <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsla(158,72%,38%,0.5)]" />
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="Shade"
+                  className="w-14 h-14 rounded-xl object-contain -my-2"
+                />
                 <div className="hidden xs:block">
                   <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
                     SHADE
@@ -439,6 +439,13 @@ export default function Home() {
                 />
                 <span className="hidden sm:inline text-xs sm:text-sm text-muted-foreground font-medium">@0x_anonnn</span>
               </a>
+              <Link
+                href="/about"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Info className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+                <span className="hidden sm:inline text-xs sm:text-sm font-medium">About</span>
+              </Link>
             </div>
 
             {/* Right Controls */}
