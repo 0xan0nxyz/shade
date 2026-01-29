@@ -2,6 +2,11 @@
 // Uses SecureKeyManager for proper encryption
 
 import { Keypair, PublicKey, LAMPORTS_PER_SOL, SystemProgram, Transaction } from '@solana/web3.js';
+
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
 import {
   secureKeyManager,
   storageGet,
@@ -49,7 +54,7 @@ function bytesToHex(bytes: Uint8Array): string {
 async function sha256(message: string): Promise<Uint8Array> {
   const encoder = new TextEncoder();
   const data = encoder.encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', toArrayBuffer(data));
   return new Uint8Array(hashBuffer);
 }
 
@@ -98,16 +103,16 @@ async function decryptLegacy(encryptedData: string, password: string): Promise<s
     // LEGACY: Uses password padding (INSECURE - only for migration)
     const key = await crypto.subtle.importKey(
       'raw',
-      encoder.encode(password.padEnd(32, '0').slice(0, 32)),
+      toArrayBuffer(encoder.encode(password.padEnd(32, '0').slice(0, 32))),
       'AES-GCM',
       false,
       ['decrypt']
     );
 
     const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
+      { name: 'AES-GCM', iv: toArrayBuffer(new Uint8Array(iv)) },
       key,
-      data
+      toArrayBuffer(new Uint8Array(data))
     );
 
     return decoder.decode(decrypted);

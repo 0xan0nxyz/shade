@@ -3,6 +3,11 @@
 // Uses SecureKeyManager for proper encryption (no hardcoded keys)
 
 import { Transaction, PublicKey, Keypair, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
 import {
   secureKeyManager,
   storageGet,
@@ -196,16 +201,16 @@ async function decryptLegacyKeypair(encrypted: string): Promise<Uint8Array | nul
     const keyData = encoder.encode('shade-gasless-key-2026');
     const key = await crypto.subtle.importKey(
       'raw',
-      keyData,
+      toArrayBuffer(keyData),
       'AES-GCM',
       false,
       ['decrypt']
     );
 
     const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
+      { name: 'AES-GCM', iv: toArrayBuffer(new Uint8Array(iv)) },
       key,
-      data
+      toArrayBuffer(new Uint8Array(data))
     );
 
     const decoded = decoder.decode(decrypted);

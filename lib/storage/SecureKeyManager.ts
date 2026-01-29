@@ -1,6 +1,11 @@
 // SecureKeyManager - Handles key derivation and encryption
 // Uses PBKDF2 with 310k iterations (OWASP 2025 recommendation)
 
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
+
 const SECURITY_CONFIG = {
   KDF: {
     algorithm: 'PBKDF2',
@@ -56,7 +61,7 @@ export class SecureKeyManager {
 
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
-      passwordBuffer,
+      toArrayBuffer(passwordBuffer),
       'PBKDF2',
       false,
       ['deriveKey']
@@ -65,7 +70,7 @@ export class SecureKeyManager {
     return crypto.subtle.deriveKey(
       {
         name: SECURITY_CONFIG.KDF.algorithm,
-        salt,
+        salt: toArrayBuffer(salt),
         iterations: SECURITY_CONFIG.KDF.iterations,
         hash: SECURITY_CONFIG.KDF.hash,
       },
@@ -98,7 +103,7 @@ export class SecureKeyManager {
     combined.set(this.masterSalt);
     combined.set(purposeBuffer, this.masterSalt.length);
 
-    const subSaltBuffer = await crypto.subtle.digest('SHA-256', combined);
+    const subSaltBuffer = await crypto.subtle.digest('SHA-256', toArrayBuffer(combined));
     const subSalt = new Uint8Array(subSaltBuffer);
 
     // Derive sub-key using cached password + sub-salt
@@ -106,7 +111,7 @@ export class SecureKeyManager {
 
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
-      passwordBuffer,
+      toArrayBuffer(passwordBuffer),
       'PBKDF2',
       false,
       ['deriveKey']
@@ -115,7 +120,7 @@ export class SecureKeyManager {
     return crypto.subtle.deriveKey(
       {
         name: SECURITY_CONFIG.KDF.algorithm,
-        salt: subSalt,
+        salt: toArrayBuffer(subSalt),
         iterations: 1000, // Fewer iterations since master key is already strong
         hash: 'SHA-256',
       },
@@ -183,9 +188,9 @@ export class SecureKeyManager {
     const encoder = new TextEncoder();
 
     const ciphertext = await crypto.subtle.encrypt(
-      { name: SECURITY_CONFIG.ENCRYPTION.algorithm, iv },
+      { name: SECURITY_CONFIG.ENCRYPTION.algorithm, iv: toArrayBuffer(iv) },
       key,
-      encoder.encode(data)
+      toArrayBuffer(encoder.encode(data))
     );
 
     return {

@@ -8,26 +8,36 @@ import { getConnection } from './solana';
 declare global {
   interface Window {
     phantom?: {
-      solana?: {
-        isPhantom: boolean;
-        publicKey?: { toBase58: () => string };
-        isConnected?: boolean;
-        connect: (options?: { onlyIfTrusted: boolean }) => Promise<{ publicKey: { toBase58: () => string } }>;
-        disconnect: () => Promise<void>;
-        signMessage: (message: Uint8Array) => Promise<{ signature: Uint8Array }>;
-        signTransaction: (transaction: any) => Promise<any>;
-        on: (event: string, callback: (args: any) => void) => void;
-      };
+      solana?: PhantomProvider;
     };
-    solflare?: {
-      isSolflare: boolean;
-      publicKey?: { toBase58: () => string };
-      connect: () => Promise<{ publicKey: { toBase58: () => string } }>;
-      disconnect: () => Promise<void>;
-      signMessage: (message: Uint8Array) => Promise<{ signature: Uint8Array }>;
-      signTransaction: (transaction: any) => Promise<any>;
-    };
+    solflare?: SolflareProvider;
   }
+}
+
+interface PhantomProvider {
+  isPhantom: boolean;
+  publicKey?: { toBase58: () => string };
+  isConnected?: boolean;
+  connect: (options?: { onlyIfTrusted: boolean }) => Promise<{ publicKey: { toBase58: () => string } }>;
+  disconnect: () => Promise<void>;
+  signMessage: (message: Uint8Array) => Promise<{ signature: Uint8Array }>;
+  signTransaction: (transaction: any) => Promise<any>;
+  on: (event: string, callback: (args: any) => void) => void;
+  off?: (event: string, callback: (args: any) => void) => void;
+  removeListener?: (event: string, callback: (args: any) => void) => void;
+}
+
+interface SolflareProvider {
+  isSolflare: boolean;
+  publicKey?: { toBase58: () => string };
+  isConnected?: boolean;
+  connect: () => Promise<{ publicKey: { toBase58: () => string } }>;
+  disconnect: () => Promise<void>;
+  signMessage: (message: Uint8Array) => Promise<{ signature: Uint8Array }>;
+  signTransaction: (transaction: any) => Promise<any>;
+  on?: (event: string, callback: (args: any) => void) => void;
+  off?: (event: string, callback: (args: any) => void) => void;
+  removeListener?: (event: string, callback: (args: any) => void) => void;
 }
 
 export interface ConnectedWallet {
@@ -38,13 +48,16 @@ export interface ConnectedWallet {
 
 export type WalletAdapter = 'phantom' | 'solflare';
 
+// Common provider interface
+type SolanaProvider = PhantomProvider | SolflareProvider;
+
 // Store the provider reference for event handling
-let solanaProvider: typeof window.phantom.solana | null = null;
+let solanaProvider: SolanaProvider | null = null;
 
 /**
  * Get the Solana provider (Phantom or Solflare)
  */
-function getProvider(): typeof window.phantom.solana | typeof window.solflare | null {
+function getProvider(): SolanaProvider | null {
   if (typeof window === 'undefined') return null;
 
   if (window.phantom?.solana?.isPhantom) {

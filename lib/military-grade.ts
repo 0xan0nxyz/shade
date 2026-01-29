@@ -3,6 +3,27 @@
 
 import { Keypair } from '@solana/web3.js';
 
+// Extend Window interface for devtools detection
+declare global {
+  interface Window {
+    devtools?: {
+      isOpen?: boolean;
+    };
+  }
+}
+
+// Threat log entry type
+interface ThreatEntry {
+  timestamp: number;
+  threat: string;
+  severity: string;
+}
+
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
+
 // ============================================
 // CONSTANTS - Military Grade Configuration
 // ============================================
@@ -64,9 +85,9 @@ const SECURITY_CONFIG = {
 // Detect debugging
 function detectDebugging(): boolean {
   if (typeof window === 'undefined') return false;
-  
+
   // Check for dev tools opened
-  const devToolsOpen = window.devtools !== undefined;
+  const devToolsOpen = window.devtools?.isOpen === true;
   
   // Check for console debugging
   const startTime = performance.now();
@@ -104,7 +125,7 @@ function detectCodeTampering(): boolean {
 
 // Monitor for suspicious behavior
 export class SecurityMonitor {
-  private threats: string[] = [];
+  private threats: ThreatEntry[] = [];
   private tamperDetected = false;
   private lastIntegrityCheck = 0;
   
@@ -227,21 +248,21 @@ export async function deriveMilitaryKey(
 ): Promise<CryptoKey> {
   const encoder = new TextEncoder();
   const passwordBuffer = encoder.encode(password);
-  
+
   // First derivation
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
-    passwordBuffer,
+    toArrayBuffer(passwordBuffer),
     'PBKDF2',
     false,
     ['deriveKey']
   );
-  
+
   // Multi-round derivation
-  let derivedKey = await crypto.subtle.deriveKey(
+  const derivedKey = await crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt,
+      salt: toArrayBuffer(salt),
       iterations,
       hash: SECURITY_CONFIG.KDF.hash,
     },
@@ -250,7 +271,7 @@ export async function deriveMilitaryKey(
     false,
     ['encrypt', 'decrypt']
   );
-  
+
   return derivedKey;
 }
 
@@ -270,11 +291,11 @@ export async function militaryEncrypt(
   
   // Encrypt
   const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: toArrayBuffer(iv) },
     key,
-    encoder.encode(data)
+    toArrayBuffer(encoder.encode(data))
   );
-  
+
   // Add timestamp for freshness verification
   const timestamp = Date.now();
   const payload = JSON.stringify({
@@ -282,11 +303,11 @@ export async function militaryEncrypt(
     timestamp,
     checksum: await computeChecksum(data + timestamp + password),
   });
-  
+
   const encryptedPayload = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: toArrayBuffer(iv) },
     key,
-    encoder.encode(payload)
+    toArrayBuffer(encoder.encode(payload))
   );
   
   // Combine: salt + iv + encrypted data + timestamp signature
@@ -365,7 +386,7 @@ export async function militaryDecrypt(
 // Compute checksum
 async function computeChecksum(data: string): Promise<Uint8Array> {
   const encoder = new TextEncoder();
-  const hashBuffer = await crypto.subtle.digest('SHA-512', encoder.encode(data));
+  const hashBuffer = await crypto.subtle.digest('SHA-512', toArrayBuffer(encoder.encode(data)));
   return new Uint8Array(hashBuffer.slice(0, 32));
 }
 
@@ -376,7 +397,7 @@ async function signTimestamp(timestamp: number, key: CryptoKey): Promise<Uint8Ar
   const signature = await crypto.subtle.sign(
     'HMAC',
     key,
-    data
+    toArrayBuffer(data)
   );
   return new Uint8Array(signature);
 }
@@ -392,8 +413,8 @@ async function verifyTimestampSignature(
   return await crypto.subtle.verify(
     'HMAC',
     key,
-    signature,
-    data
+    toArrayBuffer(signature),
+    toArrayBuffer(data)
   );
 }
 
@@ -480,15 +501,16 @@ export class SecureSession {
   async sign(data: Uint8Array): Promise<Uint8Array | null> {
     this.updateActivity();
     if (this.locked || !this.sessionKey) return null;
-    
-    return await crypto.subtle.sign('HMAC', this.sessionKey, data);
+
+    const sig = await crypto.subtle.sign('HMAC', this.sessionKey, toArrayBuffer(data));
+    return new Uint8Array(sig);
   }
-  
+
   async verify(data: Uint8Array, signature: Uint8Array): Promise<boolean> {
     this.updateActivity();
     if (this.locked || !this.sessionKey) return false;
-    
-    return await crypto.subtle.verify('HMAC', this.sessionKey, signature, data);
+
+    return await crypto.subtle.verify('HMAC', this.sessionKey, toArrayBuffer(signature), toArrayBuffer(data));
   }
 }
 
@@ -675,10 +697,4 @@ export class TransactionSecurity {
 // EXPORTS
 // ============================================
 
-export {
-  SECURITY_CONFIG,
-  secureRandom,
-  deriveMilitaryKey,
-  militaryEncrypt,
-  militaryDecrypt,
-};
+export { SECURITY_CONFIG };

@@ -10,7 +10,7 @@ export type { MigrationResult } from './MigrationManager';
 export { MigrationManager, STORAGE_KEYS } from './MigrationManager';
 
 import { IndexedDBStorage } from './IndexedDBStorage';
-import { MigrationManager, STORAGE_KEYS } from './MigrationManager';
+import { MigrationManager, STORAGE_KEYS, type MigrationResult } from './MigrationManager';
 import { secureKeyManager } from './SecureKeyManager';
 
 // Singleton storage instance

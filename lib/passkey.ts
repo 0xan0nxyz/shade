@@ -1,6 +1,11 @@
 // Enhanced Passkey Wallet - Seedless-equivalent implementation
 // Uses WebAuthn for wallet creation + proper key derivation
 
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
+
 const RP_ID = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
 const RP_NAME = 'SHADE Wallet';
 const ORIGIN = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
@@ -80,7 +85,7 @@ async function deriveKeyFromCredential(
   const derivationString = `${credentialHex}:${DEFAULT_DERIVATION_PATH}:${derivationIndex}`;
   const seedBuffer = await crypto.subtle.digest(
     'SHA-256',
-    encoder.encode(derivationString)
+    toArrayBuffer(encoder.encode(derivationString))
   );
   
   return generateKeypairFromSeed(new Uint8Array(seedBuffer));
@@ -265,7 +270,7 @@ export async function signWithPasskey(message: string): Promise<Uint8Array | nul
     // In production, this would use the actual private key
     // For demo, return a hash of the message
     const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(message));
+    const hashBuffer = await crypto.subtle.digest('SHA-256', toArrayBuffer(encoder.encode(message)));
     return new Uint8Array(hashBuffer);
   } catch {
     return null;

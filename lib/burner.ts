@@ -2,6 +2,11 @@
 // Uses SecureKeyManager for proper AES-GCM encryption with PBKDF2 key derivation
 
 import { Keypair, PublicKey, LAMPORTS_PER_SOL, SystemProgram, Transaction } from '@solana/web3.js';
+
+// Helper to get a proper ArrayBuffer from Uint8Array (fixes TS strict mode issues)
+function toArrayBuffer(arr: Uint8Array): ArrayBuffer {
+  return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength) as ArrayBuffer;
+}
 import {
   secureKeyManager,
   storageGet,
@@ -186,7 +191,7 @@ async function decryptLegacyKey(id: string, encrypted: string): Promise<Keypair 
     const passwordBuffer = encoder.encode(id);
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
-      passwordBuffer,
+      toArrayBuffer(passwordBuffer),
       'PBKDF2',
       false,
       ['deriveKey']
@@ -195,7 +200,7 @@ async function decryptLegacyKey(id: string, encrypted: string): Promise<Keypair 
     const key = await crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt,
+        salt: toArrayBuffer(salt),
         iterations: 100000,
         hash: 'SHA-256'
       },
@@ -206,9 +211,9 @@ async function decryptLegacyKey(id: string, encrypted: string): Promise<Keypair 
     );
 
     const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
+      { name: 'AES-GCM', iv: toArrayBuffer(iv) },
       key,
-      encryptedData
+      toArrayBuffer(encryptedData)
     );
 
     const secretKey = new Uint8Array(decrypted);

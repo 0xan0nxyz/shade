@@ -33,7 +33,7 @@ export function StatsCards({ burnerCount, totalBalance, network }: StatsCardsPro
   const config = networkConfig[network];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10 max-w-3xl mx-auto">
       {/* Burners Card */}
       <Card className="glass border border-white/5 hover:border-white/10 transition-all">
         <CardContent className="p-4 sm:p-5">
