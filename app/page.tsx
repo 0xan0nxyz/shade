@@ -430,13 +430,14 @@ export default function Home() {
                 href="https://x.com/0x_anonnn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+                className="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity"
               >
                 <img
                   src="/anon.jpg"
                   alt="@0x_anonnn"
                   className="w-6 h-6 sm:w-7 sm:h-7 rounded-full ring-1 ring-white/10"
                 />
+                <span className="hidden sm:inline text-xs sm:text-sm text-muted-foreground font-medium">@0x_anonnn</span>
               </a>
             </div>
 
