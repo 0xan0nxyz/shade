@@ -207,7 +207,7 @@ stealth_address_1 = derive(seed, 1).publicKey
 
       {/* Download */}
       <section className="text-center">
-        <a href="/docs/WHITEPAPER.md" download>
+        <a href="/WHITEPAPER.md" download="SHADE-Whitepaper.md">
           <Button className="gap-2 bg-primary hover:bg-primary/90">
             <Download className="w-4 h-4" />
             Download Full Whitepaper (Markdown)

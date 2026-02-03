@@ -96,10 +96,12 @@ export function ActionButtons({ onViewChange, onAirdropRequest }: ActionButtonsP
           className={`
             glass rounded-xl p-2.5 sm:p-4 h-auto flex flex-col items-center justify-center gap-1.5 sm:gap-3
             transition-all duration-200
+            hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/10
+            active:scale-95
             ${variantStyles[action.variant]}
           `}
         >
-          <div className="p-1.5 sm:p-2 rounded-lg bg-black/20">{action.icon}</div>
+          <div className="p-1.5 sm:p-2 rounded-lg bg-black/20 transition-transform duration-200 group-hover:scale-110">{action.icon}</div>
           <div className="text-center">
             <p className="font-semibold text-xs sm:text-sm">{action.label}</p>
             <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wide font-medium hidden xs:block">

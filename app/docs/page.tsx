@@ -157,16 +157,43 @@ export default function DocsOverview() {
       <section className="glass border border-white/5 rounded-xl p-6">
         <h2 className="text-2xl font-bold mb-4">How It Works</h2>
         <div className="space-y-4">
-          <div className="font-mono text-sm bg-black/30 rounded-lg p-4 overflow-x-auto">
-            <pre className="text-muted-foreground">
-{`Traditional Wallet:
-Alice → Bob → Charlie  (All visible, all linked)
+          <div className="font-mono text-sm bg-black/50 rounded-lg p-5 overflow-x-auto border border-white/5">
+            <div className="space-y-3">
+              {/* Traditional Wallet */}
+              <div>
+                <span className="text-red-400/80 text-xs uppercase tracking-wider">Traditional Wallet:</span>
+                <div className="mt-1">
+                  <span className="text-blue-400">Alice</span>
+                  <span className="text-white/40"> → </span>
+                  <span className="text-blue-400">Bob</span>
+                  <span className="text-white/40"> → </span>
+                  <span className="text-blue-400">Charlie</span>
+                  <span className="text-red-400/60 ml-3 text-xs">(All visible, all linked)</span>
+                </div>
+              </div>
 
-SHADE:
-Alice → Burner_1 → Stealth_A  (Unlinkable, untraceable)
-              ↓
-         [Destroyed]`}
-            </pre>
+              {/* Divider */}
+              <div className="border-t border-white/10 my-2" />
+
+              {/* SHADE */}
+              <div>
+                <span className="text-primary text-xs uppercase tracking-wider">SHADE:</span>
+                <div className="mt-1">
+                  <span className="text-blue-400">Alice</span>
+                  <span className="text-white/40"> → </span>
+                  <span className="text-orange-400">Burner_1</span>
+                  <span className="text-white/40"> → </span>
+                  <span className="text-purple-400">Stealth_A</span>
+                  <span className="text-primary/60 ml-3 text-xs">(Unlinkable, untraceable)</span>
+                </div>
+                <div className="mt-1 ml-12">
+                  <span className="text-white/40">↓</span>
+                </div>
+                <div className="ml-6">
+                  <span className="text-red-500 bg-red-500/10 px-2 py-0.5 rounded text-xs">[Destroyed]</span>
+                </div>
+              </div>
+            </div>
           </div>
           <p className="text-muted-foreground">
             SHADE breaks the chain of transaction visibility by using disposable wallets

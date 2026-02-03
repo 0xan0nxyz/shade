@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   title: 'SHADE | Privacy Wallet',
   description: 'Burn smart. Stay anonymous. Zero-knowledge burner wallet manager for Solana.',
   keywords: ['solana', 'wallet', 'privacy', 'burner', 'crypto', 'web3', 'anonymous'],
+  icons: {
+    icon: [
+      {
+        url: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌒</text></svg>',
+        type: 'image/svg+xml',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
