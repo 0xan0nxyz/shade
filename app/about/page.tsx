@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Ghost, Flame, Shield, Eye, Zap, Lock, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Ghost, Flame, Shield, Eye, Zap, Lock, ArrowLeft, ExternalLink, Book } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const features = [
@@ -39,27 +39,31 @@ export default function AboutPage() {
       <nav className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 glass">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 sm:gap-3">
-              <img
-                src="/logo.png"
-                alt="Shade"
-                className="w-14 h-14 rounded-xl object-contain -my-2"
-              />
+            <Link href="/" className="flex items-center gap-3 sm:gap-4">
+              <span className="text-3xl sm:text-4xl">🌒</span>
               <div className="hidden xs:block">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
+                <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
                   SHADE
                 </h1>
-                <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                <p className="text-xs sm:text-sm text-primary font-semibold uppercase tracking-wide">
                   Privacy Wallet
                 </p>
               </div>
             </Link>
-            <Link href="/">
-              <Button variant="outline" size="sm" className="gap-2 border-white/10 hover:border-white/20">
-                <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
-                Back to App
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/docs">
+                <Button variant="outline" size="sm" className="gap-2 border-white/10 hover:border-white/20">
+                  <Book className="w-4 h-4" strokeWidth={1.5} />
+                  Docs
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm" className="gap-2 border-white/10 hover:border-white/20">
+                  <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+                  Back to App
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>

@@ -4,37 +4,37 @@
 
 @layer base {
   :root {
-    /* Professional Dark Palette */
-    --background: 0 0% 6%;
-    --foreground: 0 0% 95%;
+    /* Professional Dark Theme - Clean & Readable */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Emerald Primary - Sophisticated */
-    --primary: 158 72% 38%;
+    /* Clean Cyan/Emerald Accent */
+    --primary: 173 80% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 158 72% 38%;
+    --accent: 173 80% 40%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 158 72% 38%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 173 80% 40%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
   }
 }
 
@@ -45,21 +45,25 @@
 body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'SF Pro Display', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv11', 'ss01', 'ss02', 'ss03';
 }
 
 /* Typography */
 .font-sans {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-variant-ligatures: none;
 }
 
 /* Animations - Subtle & Professional */
@@ -96,56 +100,58 @@ body {
   }
 }
 
-/* Refined Glass Effect */
+/* Clean Glass Effect - High Contrast */
 .glass {
   background: linear-gradient(
     135deg,
-    hsla(0, 0%, 7%, 0.95) 0%,
-    hsla(0, 0%, 9%, 0.9) 100%
+    rgba(26, 26, 26, 0.95) 0%,
+    rgba(18, 18, 18, 0.9) 100%
   );
-  backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid hsla(0, 0%, 18%, 1);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
-    0 1px 3px hsla(0, 0%, 0%, 0.4),
-    0 8px 24px hsla(0, 0%, 0%, 0.3),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .glass-noir {
   background: linear-gradient(
     135deg,
-    hsla(0, 0%, 7%, 0.95) 0%,
-    hsla(0, 0%, 9%, 0.9) 100%
+    rgba(26, 26, 26, 0.95) 0%,
+    rgba(18, 18, 18, 0.9) 100%
   );
-  backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid hsla(0, 0%, 18%, 1);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
-    0 1px 3px hsla(0, 0%, 0%, 0.4),
-    0 8px 24px hsla(0, 0%, 0%, 0.3),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Text Gradient */
+/* Text Gradient - Clean Cyan/Emerald */
 .text-gradient {
   background: linear-gradient(
     135deg,
-    hsl(158, 72%, 48%) 0%,
-    hsl(160, 75%, 40%) 100%
+    hsl(173, 80%, 50%) 0%,
+    hsl(160, 84%, 45%) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 .text-gradient-noir {
   background: linear-gradient(
     135deg,
-    hsl(158, 72%, 48%) 0%,
-    hsl(160, 75%, 40%) 100%
+    hsl(173, 80%, 50%) 0%,
+    hsl(160, 84%, 45%) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 /* Custom Scrollbar - Refined */
@@ -230,22 +236,28 @@ body {
   }
 }
 
-/* Atmospheric Background Effects - Subtle */
+/* Atmospheric Background Effects - Subtle Cyan */
 .atmosphere-glow {
   position: fixed;
-  width: 800px;
-  height: 800px;
+  width: 1000px;
+  height: 1000px;
   border-radius: 50%;
-  filter: blur(150px);
+  filter: blur(180px);
   opacity: 0.08;
   pointer-events: none;
   z-index: 0;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -30px); }
 }
 
 .atmosphere-glow-primary {
   background: radial-gradient(
     circle,
-    hsla(158, 72%, 38%, 0.3) 0%,
+    hsla(173, 80%, 50%, 0.3) 0%,
     transparent 70%
   );
 }
@@ -253,7 +265,7 @@ body {
 .atmosphere-glow-accent {
   background: radial-gradient(
     circle,
-    hsla(0, 72%, 51%, 0.25) 0%,
+    hsla(160, 84%, 45%, 0.25) 0%,
     transparent 70%
   );
 }
@@ -265,8 +277,8 @@ body {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 70%,
-    hsla(0, 0%, 0%, 0.4) 100%
+    transparent 60%,
+    hsla(0, 0%, 0%, 0.6) 100%
   );
   pointer-events: none;
   z-index: 1;

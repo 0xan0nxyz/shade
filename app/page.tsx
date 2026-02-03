@@ -26,7 +26,7 @@ import { createPasskeyWallet, authenticateWithPasskey, hasPasskeyWallet, deleteP
 import { setFeePayerAddress, getFeePayerAddress, createPrepaidBurner, getPrepaidBurners, deletePrepaidBurner, getGaslessStats, clearGaslessConfig } from '@/lib/gasless';
 import { connectWallet, disconnectWallet, getWalletBalance, isWalletInstalled, getAvailableWallets, getConnectedWallet, ConnectedWallet } from '@/lib/wallet-connection';
 import { Network } from '@/lib/constants';
-import { Ghost, ChevronDown, Droplets, Wallet, AlertTriangle, Info } from 'lucide-react';
+import { Ghost, ChevronDown, Droplets, Wallet, AlertTriangle, Info, Book, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -411,17 +411,13 @@ export default function Home() {
           <div className="flex items-center justify-between gap-4 sm:gap-6">
             {/* Logo + X Link */}
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="flex items-center gap-2.5 sm:gap-3">
-                <img
-                  src="/logo.png"
-                  alt="Shade"
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-contain"
-                />
+              <div className="flex items-center gap-3 sm:gap-4">
+                <span className="text-3xl sm:text-4xl">🌒</span>
                 <div>
-                  <h1 className="text-sm sm:text-lg font-bold tracking-tight text-foreground">
+                  <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
                     SHADE
                   </h1>
-                  <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-medium hidden sm:block">
+                  <p className="text-xs sm:text-sm text-primary font-semibold uppercase tracking-wide">
                     Privacy Wallet
                   </p>
                 </div>
@@ -445,6 +441,13 @@ export default function Home() {
               >
                 <Info className="w-5 h-5" strokeWidth={1.5} />
                 <span className="text-sm font-medium">About</span>
+              </Link>
+              <Link
+                href="/docs"
+                className="hidden sm:flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Book className="w-5 h-5" strokeWidth={1.5} />
+                <span className="text-sm font-medium">Docs</span>
               </Link>
             </div>
 
@@ -540,19 +543,37 @@ export default function Home() {
         )}
 
         {/* Hero Section */}
-        <div className="text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
-          <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+        <div className="text-center mb-8 sm:mb-12 space-y-4 sm:space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-medium">
+            <Ghost className="w-4 h-4" strokeWidth={1.5} />
+            Privacy-First Wallet for Solana
+          </div>
+          <h2 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight">
             <span className="text-gradient">Burn Smart.</span>
-            <span className="block text-lg xs:text-xl sm:text-2xl md:text-3xl text-foreground/90 mt-2 sm:mt-3 font-medium">
+            <span className="block text-xl xs:text-2xl sm:text-3xl md:text-4xl text-foreground/90 mt-3 sm:mt-4 font-medium">
               Stay Anonymous.
             </span>
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed px-4 sm:px-0">
-            Zero-knowledge burner wallet manager for Solana.
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
+            Create disposable wallets, generate stealth addresses, and transact without leaving a trace.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
-            Generate disposable wallets. Leave no trace.
+            Military-grade encryption. Zero server trust.
           </p>
+          <div className="flex flex-col xs:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
+            <Link href="/docs/getting-started">
+              <Button className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground h-11 px-6">
+                <Book className="w-4 h-4" strokeWidth={1.5} />
+                Get Started
+              </Button>
+            </Link>
+            <Link href="/docs">
+              <Button variant="outline" className="gap-2 border-white/10 hover:border-white/20 h-11 px-6">
+                <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
+                Documentation
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <StatsCards burnerCount={burners.length} totalBalance={totalBalance} network={network} />

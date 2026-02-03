@@ -66,12 +66,19 @@ module.exports = {
   		},
   		fontFamily: {
   			mono: [
-  				'JetBrains Mono',
-  				'Fira Code',
+  				'SF Mono',
+  				'Monaco',
+  				'Cascadia Code',
+  				'Consolas',
+  				'Courier New',
   				'monospace'
   			],
   			sans: [
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'Segoe UI',
   				'Inter',
+  				'SF Pro Display',
   				'system-ui',
   				'sans-serif'
   			]
@@ -102,5 +109,8 @@ module.exports = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 };
