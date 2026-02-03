@@ -33,17 +33,73 @@ export default function BurnerWalletsDocs() {
 {`Traditional Flow:
 Main Wallet → Exchange → DEX → NFT → Mixer
      ↓
-[All transactions linked to one address]
+[All activity linked to one address forever]
 
-Burner Flow:
-Main Wallet → Burner_1 → NFT Purchase
-                   ↓
-              [Destroyed]
-
-Main Wallet → Burner_2 → DEX Trade
-                   ↓
-              [Destroyed]`}
+Compartmentalized Flow:
+Activity A: Burner_1 → NFT Purchase → [Destroyed]
+Activity B: Burner_2 → DEX Trade → [Destroyed]
+Activity C: Burner_3 → Airdrop Claim → [Destroyed]
+     ↓
+[Each activity is isolated from others]`}
             </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* Privacy Model */}
+      <section className="glass border border-yellow-500/20 rounded-xl p-6 bg-yellow-500/5">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          <span className="text-yellow-500">⚠️</span> Understanding the Privacy Model
+        </h2>
+        <div className="space-y-4 text-muted-foreground">
+          <p>
+            <strong className="text-foreground">Honest truth:</strong> If you fund a burner directly from your
+            main wallet, there IS an on-chain trace between them. SHADE provides <em>compartmentalization</em>,
+            not magic invisibility.
+          </p>
+
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">What burners actually provide:</p>
+            <ul className="space-y-2">
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-1">✓</span>
+                <span><strong>Forward privacy:</strong> Destinations (dApps, NFT sellers) don't see your main wallet's full history</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-1">✓</span>
+                <span><strong>Activity isolation:</strong> Different activities can't be linked to each other</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-1">✓</span>
+                <span><strong>Risk containment:</strong> Risky contracts never touch your main holdings</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-1">✓</span>
+                <span><strong>Casual observer resistance:</strong> Makes tracking harder (not impossible)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <p className="font-medium text-foreground">For stronger privacy, break the funding chain:</p>
+            <ul className="space-y-2">
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Withdraw from a CEX directly to your burner address</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Bridge from another chain to a fresh address</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Receive P2P from someone who doesn't know your main wallet</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Use the burner to receive payments first, then spend</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>

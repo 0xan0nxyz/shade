@@ -8,7 +8,7 @@ const features = [
   {
     icon: Flame,
     title: 'Burner Wallets',
-    description: 'Disposable wallets you can create, use, and destroy without trace',
+    description: 'Disposable wallets to compartmentalize your on-chain activity',
     href: '/docs/burner-wallets',
   },
   {
@@ -41,7 +41,7 @@ const comparisons = [
   { feature: 'Create wallet', traditional: true, shade: true },
   { feature: 'Send/receive crypto', traditional: true, shade: true },
   { feature: 'Disposable wallets', traditional: false, shade: true },
-  { feature: 'Untraceable payments', traditional: false, shade: true },
+  { feature: 'Activity compartmentalization', traditional: false, shade: true },
   { feature: 'Biometric login', traditional: false, shade: true },
   { feature: 'Hidden fee payer', traditional: false, shade: true },
   { feature: 'Tamper protection', traditional: false, shade: true },
@@ -56,7 +56,7 @@ export default function DocsOverview() {
           SHADE <span className="text-gradient">Documentation</span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl">
-          SHADE is a privacy-first wallet for Solana that enables untraceable transactions,
+          SHADE is a privacy-first wallet for Solana that enables compartmentalized activity,
           disposable wallets, and military-grade encryption—all running locally in your browser.
         </p>
       </div>
@@ -163,12 +163,9 @@ export default function DocsOverview() {
               <div>
                 <span className="text-red-400/80 text-xs uppercase tracking-wider">Traditional Wallet:</span>
                 <div className="mt-1">
-                  <span className="text-blue-400">Alice</span>
-                  <span className="text-white/40"> → </span>
-                  <span className="text-blue-400">Bob</span>
-                  <span className="text-white/40"> → </span>
-                  <span className="text-blue-400">Charlie</span>
-                  <span className="text-red-400/60 ml-3 text-xs">(All visible, all linked)</span>
+                  <span className="text-blue-400">Main</span>
+                  <span className="text-white/40"> → DEX → NFT → Airdrop → Risky dApp</span>
+                  <span className="text-red-400/60 ml-3 text-xs">(Everything linked forever)</span>
                 </div>
               </div>
 
@@ -177,27 +174,31 @@ export default function DocsOverview() {
 
               {/* SHADE */}
               <div>
-                <span className="text-primary text-xs uppercase tracking-wider">SHADE:</span>
-                <div className="mt-1">
-                  <span className="text-blue-400">Alice</span>
-                  <span className="text-white/40"> → </span>
-                  <span className="text-orange-400">Burner_1</span>
-                  <span className="text-white/40"> → </span>
-                  <span className="text-purple-400">Stealth_A</span>
-                  <span className="text-primary/60 ml-3 text-xs">(Unlinkable, untraceable)</span>
+                <span className="text-primary text-xs uppercase tracking-wider">SHADE (Compartmentalized):</span>
+                <div className="mt-2 space-y-1">
+                  <div>
+                    <span className="text-orange-400">Burner_1</span>
+                    <span className="text-white/40"> → NFT mint → </span>
+                    <span className="text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded text-xs">[Destroyed]</span>
+                  </div>
+                  <div>
+                    <span className="text-purple-400">Burner_2</span>
+                    <span className="text-white/40"> → DEX trade → </span>
+                    <span className="text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded text-xs">[Destroyed]</span>
+                  </div>
+                  <div>
+                    <span className="text-green-400">Burner_3</span>
+                    <span className="text-white/40"> → Risky airdrop → </span>
+                    <span className="text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded text-xs">[Destroyed]</span>
+                  </div>
                 </div>
-                <div className="mt-1 ml-12">
-                  <span className="text-white/40">↓</span>
-                </div>
-                <div className="ml-6">
-                  <span className="text-red-500 bg-red-500/10 px-2 py-0.5 rounded text-xs">[Destroyed]</span>
-                </div>
+                <div className="mt-2 text-primary/60 text-xs">(Activities isolated from each other)</div>
               </div>
             </div>
           </div>
           <p className="text-muted-foreground">
-            SHADE breaks the chain of transaction visibility by using disposable wallets
-            and one-time addresses that cannot be linked together.
+            SHADE compartmentalizes your on-chain activity. Each burner is used for a single purpose
+            then destroyed, so different activities can't be easily linked together.
           </p>
         </div>
       </section>

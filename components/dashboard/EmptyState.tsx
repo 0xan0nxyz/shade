@@ -10,7 +10,7 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       <div className="text-5xl sm:text-6xl mb-4 sm:mb-5">🔥</div>
       <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">No Burners Yet</h3>
       <p className="text-muted-foreground text-xs sm:text-sm mb-5 sm:mb-6 max-w-sm mx-auto">
-        Create your first burner wallet to get started with private, unlinkable transactions.
+        Create your first burner wallet to compartmentalize your on-chain activity.
       </p>
       <button
         onClick={onCreateClick}

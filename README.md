@@ -20,7 +20,7 @@ Most crypto wallets expose everything—your balance, transactions, and everyone
 
 SHADE is a privacy-first wallet for Solana that lets you:
 
-- **Create burner wallets** — Use once, destroy forever. No trace.
+- **Create burner wallets** — Compartmentalize activity, use once, destroy
 - **Generate stealth addresses** — One-time addresses that can't be linked
 - **Login with biometrics** — No seed phrase to lose or steal
 - **Pay fees from hidden wallets** — Your main wallet stays invisible
@@ -56,7 +56,7 @@ SHADE gives you the privacy that traditional finance takes for granted—in the 
 | Create wallet | ✅ | ✅ |
 | Send/receive crypto | ✅ | ✅ |
 | Disposable wallets | ❌ | ✅ |
-| Untraceable payments | ❌ | ✅ |
+| Activity compartmentalization | ❌ | ✅ |
 | Biometric login | ❌ | ✅ |
 | Hidden fee payer | ❌ | ✅ |
 | Tamper protection | ❌ | ✅ |
