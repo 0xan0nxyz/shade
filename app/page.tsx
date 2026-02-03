@@ -706,13 +706,6 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-12 sm:mt-20 pt-8 border-t border-white/5">
           <div className="max-w-3xl mx-auto space-y-6">
-            {/* Beta Warning */}
-            <div className="text-center p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
-              <p className="text-xs sm:text-sm text-yellow-500/80">
-                <span className="font-semibold">⚠️ Beta Software:</span> SHADE is currently in testing. Use at your own risk. Not responsible for any loss of funds.
-              </p>
-            </div>
-
             {/* Links */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm">
               <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
